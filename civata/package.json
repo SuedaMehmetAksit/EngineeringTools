@@ -1,0 +1,1 @@
+{"name":"sdm-civata-on-yuk","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node engine.test.mjs","start":"python3 -m http.server 8080"}}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Hidrolik silindir itme, çekme ve minimum piston çapı hesaplama aracı">
+  <title>SDM | Hidrolik Silindir Hesabı</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="nav.css">
+  <link rel="stylesheet" href="../lang.css">
+</head>
+<body>
+  <nav class="tool-nav" aria-label="Araçlar arası geçiş"><div><a href="../index.html">← Ana sayfa</a><span>Hesap araçları</span><a class="active" href="index.html">Hidrolik</a><a href="../civata/index.html">Cıvata ön yük</a></div></nav>
+  <header class="hero">
+    <div class="hero__inner">
+      <a class="brand" href="https://www.sdmresearch.com/" target="_blank" rel="noreferrer" aria-label="SDM Research & Engineering web sitesi">
+        <img src="assets/sdm-logo.png" alt="SDM Research & Engineering">
+      </a>
+      <div class="hero__copy">
+        <p class="eyebrow">Mühendislik hesap araçları</p>
+        <h1>Hidrolik silindir hesabı</h1>
+        <p class="lede">Özel test düzenekleri ve endüstriyel ekipmanlar için ön boyutlandırma.</p>
+      </div>
+      <div class="hero__meta"><span>Pilot uygulama</span><strong>v1.2.0</strong></div>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="document-bar" aria-label="Hesap kaydı">
+      <label><span>Proje</span><input id="projectName" type="text" placeholder="Proje veya test düzeneği adı"></label>
+      <label><span>Hesap no.</span><input id="calculationNo" type="text" placeholder="Örn. HC-001"></label>
+      <label><span>Hazırlayan</span><input id="preparedBy" type="text" value="Süeda § Mehmet Akşit"></label>
+      <div class="document-state"><span>Belge durumu</span><strong>Ön hesap / doğrulama bekliyor</strong></div>
+    </section>
+    <section class="card input-card" aria-labelledby="inputs-title">
+      <div class="section-title">
+        <div><h2 id="inputs-title">Hesap girdileri</h2></div>
+        <button id="resetButton" class="button button--ghost" type="button">Varsayılana dön</button>
+      </div>
+
+      <form id="calculatorForm" novalidate>
+        <div class="field-grid">
+          <label class="field">
+            <span>Piston çapı <strong>D</strong></span>
+            <span class="control"><input id="pistonDiameter" name="pistonDiameter" type="number" min="0.01" step="0.01" value="100" required><select id="diameterUnit" aria-label="Çap birimi"><option value="mm">mm</option><option value="in">in</option></select></span>
+            <small id="pistonDiameterError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Mil çapı <strong>d</strong></span>
+            <span class="control"><input id="rodDiameter" name="rodDiameter" type="number" min="0" step="0.01" value="50" required><span id="rodDiameterUnit">mm</span></span>
+            <small id="rodDiameterError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Basınç <strong>P</strong></span>
+            <span class="control"><input id="pressure" name="pressure" type="number" min="0.01" step="0.01" value="160" required><select id="pressureUnit" aria-label="Basınç birimi"><option value="bar">bar</option><option value="MPa">MPa</option><option value="psi">psi</option></select></span>
+            <small id="pressureError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Karşı basınç <strong>P<sub>r</sub></strong></span>
+            <span class="control"><input id="backPressure" name="backPressure" type="number" min="0" step="0.01" value="0" required><span id="backPressureUnit">bar</span></span>
+            <small id="backPressureError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Toplam verim <strong>η</strong></span>
+            <span class="control"><input id="efficiency" name="efficiency" type="number" min="0.01" max="100" step="0.01" value="90" required><span>%</span></span>
+            <small id="efficiencyError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Silindir adedi <strong>n</strong></span>
+            <span class="control"><input id="cylinderCount" name="cylinderCount" type="number" min="1" step="1" value="1" required><span>adet</span></span>
+            <small id="cylinderCountError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Emniyet katsayısı <strong>S</strong></span>
+            <span class="control"><input id="safetyFactor" name="safetyFactor" type="number" min="1" step="0.01" value="1.5" required><span>×</span></span>
+            <small id="safetyFactorError" class="error"></small>
+          </label>
+          <label class="field field--wide">
+            <span>Hedef toplam kuvvet <strong>F<sub>t</sub></strong> <em>isteğe bağlı</em></span>
+            <span class="control"><input id="targetForce" name="targetForce" type="number" min="0.01" step="0.01" placeholder="Örn. 100"><select id="forceUnit" aria-label="Kuvvet birimi"><option value="kN">kN</option><option value="N">N</option><option value="kgf">kgf</option><option value="lbf">lbf</option></select></span>
+            <small id="targetForceError" class="error"></small>
+          </label>
+          <div class="field-separator"><span>Hareket ve debi hesabı</span><small>İsteğe bağlı</small></div>
+          <label class="field">
+            <span>Strok <strong>L</strong></span>
+            <span class="control"><input id="stroke" name="stroke" type="number" min="0.01" step="0.01" placeholder="Örn. 500"><select id="strokeUnit" aria-label="Strok birimi"><option value="mm">mm</option><option value="in">in</option></select></span>
+            <small id="strokeError" class="error"></small>
+          </label>
+          <label class="field">
+            <span>Hedef hız <strong>v</strong></span>
+            <span class="control"><input id="speed" name="speed" type="number" min="0.01" step="0.01" placeholder="Örn. 50"><select id="speedUnit" aria-label="Hız birimi"><option value="mm/s">mm/s</option><option value="mm/dk">mm/dk</option><option value="in/s">in/s</option><option value="in/dk">in/dk</option></select></span>
+            <small id="speedError" class="error"></small>
+          </label>
+        </div>
+        <div id="formError" class="alert alert--error" role="alert" hidden></div>
+      </form>
+    </section>
+
+    <section class="card results-card" aria-labelledby="results-title">
+      <div class="section-title">
+        <div><h2 id="results-title">Hesap sonuçları</h2></div>
+        <div class="actions"><label class="result-unit">Sonuç <select id="resultForceUnit" aria-label="Sonuç kuvvet birimi"><option value="kN">kN</option><option value="N">N</option><option value="kgf">kgf</option><option value="lbf">lbf</option></select></label><button id="csvButton" class="button button--ghost" type="button">CSV indir</button><button id="printButton" class="button" type="button">Rapor yazdır / PDF</button></div>
+      </div>
+
+      <div id="resultStatus" class="status" aria-live="polite">Girdiler değiştikçe sonuçlar otomatik güncellenir.</div>
+      <div class="result-columns">
+        <article class="result-panel result-panel--push">
+          <p class="result-kicker">İtme · piston tarafı</p>
+          <h3 id="pushSafe">—</h3><span class="result-label">Emniyetli toplam kuvvet</span>
+          <dl><div><dt>Teorik</dt><dd id="pushTheoretical">—</dd></div><div><dt>Verim düzeltilmiş</dt><dd id="pushAdjusted">—</dd></div><div><dt>Tek silindir emniyetli</dt><dd id="pushSafeSingle">—</dd></div><div><dt>Alan</dt><dd id="pistonArea">—</dd></div></dl>
+        </article>
+        <article class="result-panel result-panel--pull">
+          <p class="result-kicker">Çekme · mil tarafı</p>
+          <h3 id="pullSafe">—</h3><span class="result-label">Emniyetli toplam kuvvet</span>
+          <dl><div><dt>Teorik</dt><dd id="pullTheoretical">—</dd></div><div><dt>Verim düzeltilmiş</dt><dd id="pullAdjusted">—</dd></div><div><dt>Tek silindir emniyetli</dt><dd id="pullSafeSingle">—</dd></div><div><dt>Net alan</dt><dd id="annularArea">—</dd></div></dl>
+        </article>
+      </div>
+      <article id="targetPanel" class="target-panel" hidden>
+        <div><p class="result-kicker">Hedef kuvvet için piston çapı</p><h3 id="requiredDiameter">—</h3></div>
+        <p id="targetAssessment">—</p>
+      </article>
+      <div id="motionPanel" class="engineering-table" hidden>
+        <div class="table-title">Hareket ve yağ ihtiyacı</div>
+        <div class="table-row"><span>Piston tarafı yağ hacmi</span><strong id="capVolume">—</strong></div>
+        <div class="table-row"><span>Mil tarafı yağ hacmi</span><strong id="rodVolume">—</strong></div>
+        <div class="table-row"><span>İtme için gerekli debi</span><strong id="pushFlow">—</strong></div>
+        <div class="table-row"><span>Çekme için gerekli debi</span><strong id="pullFlow">—</strong></div>
+        <div class="table-row"><span>Tek yön strok süresi</span><strong id="strokeTime">—</strong></div>
+      </div>
+    </section>
+
+    <section class="card formula-card" aria-labelledby="formula-title">
+      <div class="section-title"><div><h2 id="formula-title">Hesap yöntemi ve kapsam</h2></div></div>
+      <div class="formula-grid">
+        <div><span>Piston alanı</span><code>A<sub>p</sub> = πD² / 4</code></div>
+        <div><span>Çekme alanı</span><code>A<sub>r</sub> = π(D² − d²) / 4</code></div>
+        <div><span>Net düzeltilmiş kuvvet</span><code>F = (P₁A₁ − P₂A₂) × η × n</code></div>
+        <div><span>Emniyetli yük</span><code>F<sub>safe</sub> = F / S</code></div>
+      </div>
+      <div class="method-notes">
+        <div><strong>Birim zinciri</strong><p>Basınç MPa ve alan mm² olduğunda kuvvet N çıkar. Emniyet katsayısı, verim ve silindir adedi sonuçlara ayrı ayrı uygulanır.</p></div>
+        <div><strong>Kullanım amacı</strong><p>Konsept tasarım ve özel test düzeneği ön boyutlandırmasıdır. CFD/CAE, komponent seçimi veya test düzeneği validasyonunun yerine geçmez.</p></div>
+        <div><strong>Mühendislik sınırı</strong><p>Dinamik yük, basınç darbeleri, tolerans, sıcaklık ve burkulma kapsam dışıdır. Üretim öncesi SDM konu uzmanı onayı gerekir.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Hesap zamanı: <time id="calculatedAt">—</time> · Hesap motoru sürümü 1.2.0</footer>
+  <script src="engine.js"></script>
+  <script src="app.js"></script>
+  <script src="../i18n.js"></script>
+  <script src="../i18n-extra.js"></script>
+</body>
+</html>

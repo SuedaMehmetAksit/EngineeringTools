@@ -1,0 +1,1 @@
+.tool-nav .language-switch{display:flex;margin-left:12px;border:1px solid #52686d}.tool-nav .language-switch button{width:34px;height:26px;border:0;background:transparent;color:#9bb0b5;font-size:.65rem;font-weight:700;cursor:pointer}.tool-nav .language-switch button.active{background:#fff;color:#17262d}@media(max-width:600px){.tool-nav .language-switch{margin-left:auto}}
