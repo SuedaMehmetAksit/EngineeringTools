@@ -2,6 +2,15 @@
 
 SDM Research & Engineering için hazırlanmış, Türkçe ve İngilizce kullanılabilen tarayıcı tabanlı ön hesap araçlarıdır. Sunucu, veritabanı veya kurulum gerektirmez.
 
+https://github.com/user-attachments/assets/f4e3e3f0-c2a4-46c0-9291-185995103ec4
+
+https://github.com/user-attachments/assets/6e898b59-a5ac-4bb8-8965-2e1ba3580463
+
+https://github.com/user-attachments/assets/81493616-8a58-4581-98df-8cbb74611cc8
+
+
+
+
 ## Modüller
 
 - Hidrolik silindir hesabı
